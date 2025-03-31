@@ -11,6 +11,207 @@ A comprehensive credit fraud detection system using React.js, FastAPI, Neo4j, an
 - Interactive visualization dashboard
 - API documentation with Swagger UI
 
+## System Design Documentation
+
+### Architecture Overview
+
+```mermaid
+graph TD
+    A[Transaction Data] --> B[Data Processing Pipeline]
+    B --> C[PostgreSQL]
+    B --> D[Neo4j Graph DB]
+    B --> E[GraphRAG System]
+    C --> F[Traditional Features]
+    D --> G[Graph Features]
+    E --> H[Vector Store]
+    E --> I[Pattern Matching]
+    F --> J[Feature Engineering]
+    G --> J
+    H --> K[Similar Case Analysis]
+    I --> K
+    J --> L[GNN Model]
+    K --> L
+    L --> M[Fraud Detection]
+    M --> N[Risk Scoring]
+    N --> O[Alert System]
+```
+
+### Why GraphRAG for Fraud Detection?
+
+GraphRAG (Graph-based Retrieval Augmented Generation) is particularly effective for fraud detection because:
+
+1. **Enhanced Pattern Recognition**
+   - Traditional ML: Limited to individual transaction features
+   - GraphRAG: Captures complex relationships between transactions, customers, and merchants
+   - Enables semantic understanding of fraud patterns
+
+2. **Improved Accuracy Through:**
+   - Graph-based feature extraction
+   - Relationship-aware fraud detection
+   - Pattern matching across historical data
+   - Contextual understanding of transaction networks
+
+3. **Real-time Analysis Capabilities**
+   - Quick traversal of transaction networks
+   - Immediate pattern matching
+   - Dynamic fraud scoring
+
+### Graph Database Construction with GraphRAG
+
+```mermaid
+graph LR
+    A[Transaction Data] --> B[Entity Extraction]
+    B --> C[Relationship Mapping]
+    C --> D[Graph Construction]
+    D --> E[Neo4j Storage]
+    D --> F[Vector Embedding]
+    F --> G[Vector Store]
+    
+    subgraph "GraphRAG Components"
+        H[Pattern Recognition]
+        I[Context Generation]
+        J[Similarity Search]
+    end
+    
+    G --> H
+    E --> H
+    H --> I
+    I --> J
+    J --> K[Pattern Matching]
+    K --> L[Fraud Detection]
+```
+
+#### Graph Schema Design
+
+```mermaid
+erDiagram
+    TRANSACTION ||--o{ HAS_IP : has
+    TRANSACTION ||--o{ HAS_DEVICE : uses
+    TRANSACTION ||--o{ HAS_MERCHANT : involves
+    TRANSACTION ||--o{ HAS_CUSTOMER : belongs_to
+    
+    TRANSACTION {
+        string id
+        float amount
+        timestamp time
+        string status
+        float fraud_score
+    }
+    
+    CUSTOMER {
+        string id
+        string name
+        string email
+        float risk_score
+    }
+    
+    MERCHANT {
+        string id
+        string name
+        string category
+        float risk_score
+    }
+    
+    IP_ADDRESS {
+        string id
+        string address
+        string location
+        float risk_score
+    }
+    
+    DEVICE {
+        string id
+        string fingerprint
+        string type
+        float risk_score
+    }
+```
+
+### GNN Training Process
+
+```mermaid
+graph TD
+    A[Graph Data] --> B[Node Features]
+    A --> C[Edge Features]
+    B --> D[GNN Layer 1]
+    C --> D
+    D --> E[GNN Layer 2]
+    E --> F[Global Pooling]
+    F --> G[Fraud Classification]
+    
+    subgraph "Training Pipeline"
+        H[Data Preprocessing]
+        I[Feature Engineering]
+        J[Model Training]
+        K[Validation]
+        L[Model Evaluation]
+    end
+    
+    A --> H
+    H --> I
+    I --> J
+    J --> K
+    K --> L
+```
+
+#### GNN Architecture Details
+
+1. **Input Layer**
+   - Node features: Transaction amount, time, location
+   - Edge features: Relationship type, strength
+   - Graph structure: Transaction network
+
+2. **GNN Layers**
+   - Layer 1: Graph Convolution
+     - Aggregates neighbor information
+     - Updates node embeddings
+   - Layer 2: Graph Attention
+     - Learns importance of different relationships
+     - Enhances fraud pattern detection
+
+3. **Output Layer**
+   - Global pooling for graph-level classification
+   - Fraud probability prediction
+   - Risk score calculation
+
+### Data Flow and Processing
+
+```mermaid
+sequenceDiagram
+    participant T as Transaction
+    participant G as GraphRAG
+    participant DB as Neo4j
+    participant V as Vector Store
+    participant N as GNN
+    
+    T->>G: New Transaction
+    G->>DB: Store in Graph
+    G->>V: Generate Embeddings
+    G->>N: Extract Features
+    N->>N: Process Graph
+    N-->>G: Fraud Score
+    G-->>T: Risk Assessment
+```
+
+### System Components Interaction
+
+```mermaid
+graph TD
+    A[Frontend React App] --> B[FastAPI Backend]
+    B --> C[PostgreSQL]
+    B --> D[Neo4j]
+    B --> E[GraphRAG System]
+    B --> F[GNN Model]
+    D --> G[Transaction Graph]
+    E --> H[Vector Store]
+    F --> I[Model Training]
+    G --> J[Pattern Analysis]
+    H --> K[Similar Case Matching]
+    I --> L[Fraud Detection]
+    J --> L
+    K --> L
+```
+
 ## Local Development Setup
 
 ### Prerequisites

@@ -307,6 +307,156 @@ graph TD
    python -m pytest tests/integration/
    ```
 
+### Test Data Generation and Evaluation
+
+1. **Generate Synthetic Test Data**
+   ```bash
+   # Generate synthetic transaction data
+   python scripts/generate_test_data.py --num-transactions 10000 --fraud-ratio 0.05
+   
+   # Generate customer profiles
+   python scripts/generate_customer_profiles.py --num-customers 1000
+   
+   # Generate merchant profiles
+   python scripts/generate_merchant_profiles.py --num-merchants 500
+   ```
+
+2. **Data Ingestion Pipeline**
+   ```bash
+   # Ingest data into PostgreSQL
+   python scripts/ingest_postgres.py --data-path ./test_data/transactions.csv
+   
+   # Ingest data into Neo4j
+   python scripts/ingest_neo4j.py --data-path ./test_data/
+   
+   # Generate graph embeddings
+   python scripts/generate_embeddings.py --batch-size 1000
+   ```
+
+3. **Evaluation Metrics**
+   ```bash
+   # Run evaluation pipeline
+   python scripts/evaluate_model.py --test-set ./test_data/test_set.csv
+   
+   # Generate evaluation report
+   python scripts/generate_report.py --output ./reports/evaluation_report.html
+   ```
+
+#### Test Data Structure
+
+```mermaid
+graph TD
+    A[Test Data Generation] --> B[Transaction Data]
+    A --> C[Customer Profiles]
+    A --> D[Merchant Profiles]
+    
+    B --> E[PostgreSQL]
+    C --> E
+    D --> E
+    
+    B --> F[Neo4j Graph]
+    C --> F
+    D --> F
+    
+    F --> G[Graph Embeddings]
+    G --> H[Model Evaluation]
+    E --> H
+```
+
+#### Evaluation Metrics
+
+1. **Fraud Detection Metrics**
+   - Precision
+   - Recall
+   - F1 Score
+   - ROC-AUC
+   - Confusion Matrix
+
+2. **Graph Analysis Metrics**
+   - Node Classification Accuracy
+   - Link Prediction Performance
+   - Graph Embedding Quality
+   - Pattern Detection Rate
+
+3. **System Performance Metrics**
+   - Response Time
+   - Throughput
+   - Resource Utilization
+   - Scalability
+
+#### Test Data Generation Parameters
+
+```python
+# Example configuration for test data generation
+test_config = {
+    "num_transactions": 10000,
+    "fraud_ratio": 0.05,
+    "time_range": {
+        "start": "2024-01-01",
+        "end": "2024-03-31"
+    },
+    "amount_range": {
+        "min": 10.0,
+        "max": 10000.0
+    },
+    "customer_profiles": {
+        "num_customers": 1000,
+        "risk_levels": ["low", "medium", "high"]
+    },
+    "merchant_profiles": {
+        "num_merchants": 500,
+        "categories": ["retail", "food", "travel", "entertainment"]
+    }
+}
+```
+
+#### Evaluation Pipeline
+
+```mermaid
+graph LR
+    A[Test Data] --> B[Data Ingestion]
+    B --> C[Feature Engineering]
+    C --> D[Model Prediction]
+    D --> E[Metrics Calculation]
+    E --> F[Report Generation]
+    
+    subgraph "Evaluation Components"
+        G[Precision/Recall]
+        H[ROC-AUC]
+        I[Confusion Matrix]
+        J[Response Time]
+    end
+    
+    E --> G
+    E --> H
+    E --> I
+    E --> J
+```
+
+#### Sample Evaluation Report
+
+```json
+{
+    "model_performance": {
+        "precision": 0.92,
+        "recall": 0.88,
+        "f1_score": 0.90,
+        "roc_auc": 0.95
+    },
+    "graph_metrics": {
+        "node_classification_accuracy": 0.89,
+        "link_prediction_auc": 0.87,
+        "pattern_detection_rate": 0.91
+    },
+    "system_metrics": {
+        "avg_response_time": "150ms",
+        "throughput": "1000 req/s",
+        "cpu_utilization": "45%",
+        "memory_utilization": "60%"
+    }
+}
+```
+
 ## GCP Deployment
 
 ### Prerequisites
@@ -481,4 +631,54 @@ graph TD
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### License Summary
+
+The MIT License is a permissive license that is short and to the point. It lets people do anything they want with the code as long as they provide attribution back to you and don't hold you liable.
+
+#### What you can do with this code:
+
+- ✅ Use the code commercially
+- ✅ Modify the code
+- ✅ Distribute the code
+- ✅ Use the code privately
+- ✅ Sublicense the code
+
+#### What you must do:
+
+- ✅ Include the original copyright notice
+- ✅ Include the license text
+
+#### What you cannot do:
+
+- ❌ Hold the authors liable
+- ❌ Use the authors' names/trademarks without permission
+
+### Third-Party Licenses
+
+This project uses several third-party libraries and tools. Their respective licenses are listed below:
+
+1. **Frontend Dependencies**
+   - React.js - MIT License
+   - Material-UI - MIT License
+   - D3.js - BSD 3-Clause License
+   - Axios - MIT License
+
+2. **Backend Dependencies**
+   - FastAPI - MIT License
+   - Neo4j Python Driver - Apache License 2.0
+   - SQLAlchemy - MIT License
+   - Pydantic - MIT License
+   - PyTorch - BSD 3-Clause License
+
+3. **Development Tools**
+   - Docker - Apache License 2.0
+   - Terraform - Mozilla Public License 2.0
+   - GitHub Actions - MIT License
+
+For detailed license information of each dependency, please refer to their respective package files or documentation.
+
+### Contributing
+
+By contributing to this project, you agree that your contributions will be licensed under the same MIT License as the project. This ensures that the project remains open source and freely available to everyone. 

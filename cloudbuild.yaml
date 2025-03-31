@@ -1,0 +1,74 @@
+steps:
+  # Build and push backend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:$COMMIT_SHA',
+      '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:latest',
+      '-f', 'Dockerfile.backend',
+      '.'
+    ]
+    env:
+      - 'DOCKER_BUILDKIT=1'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:latest'
+    ]
+
+  # Build and push frontend image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:$COMMIT_SHA',
+      '-t', '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:latest',
+      '-f', 'frontend/Dockerfile.frontend',
+      'frontend'
+    ]
+    env:
+      - 'DOCKER_BUILDKIT=1'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:latest'
+    ]
+
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'credit-fraud-backend'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:latest'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'credit-fraud-frontend'
+      - '--image'
+      - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:latest'
+      - '--region'
+      - '${_REGION}'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+substitutions:
+  _REGION: us-central1
+
+images:
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/backend:latest'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:$COMMIT_SHA'
+  - '${_REGION}-docker.pkg.dev/$PROJECT_ID/credit-fraud-repo/frontend:latest' 
